@@ -7,24 +7,20 @@
 'use strict';
 
 const Promise = require('bluebird');
-const readdirp = require('readdirp');
-
-const nconf = require('nconf');
-nconf
-    .argv()
-    .env(['NODE_ENV'])
-    .defaults({
-      NODE_ENV: 'development'
-    });
-
-const nodeEnv = nconf.get('NODE_ENV');
-nconf.file(`./cfg/config_${nodeEnv}.json`);
-
 const Minio = require('minio');
-const minioClient = new Minio.Client(nconf.get('minio'));
+const nconf = require('nconf');
+const readdirp = require('readdirp');
 
 (async function () {
   try {
+    nconf
+      .argv()
+      .env(['NODE_ENV'])
+      .defaults({ NODE_ENV: 'development' });
+
+    const nodeEnv = nconf.get('NODE_ENV');
+    nconf.file(`./cfg/config_${nodeEnv}.json`);
+
     const { root } = nconf.get('source');
     const { files } = await new Promise((resolve, reject) => {
       readdirp({ root }, (err, res) => {
@@ -34,6 +30,8 @@ const minioClient = new Minio.Client(nconf.get('minio'));
         resolve(res);
       });
     });
+
+    const minioClient = new Minio.Client(nconf.get('minio'));
     const { bucketName, basePath } = nconf.get('target');
     for (let { path, fullPath } of files) {
       console.log(`Uploading file: ${path}...`);
@@ -43,6 +41,7 @@ const minioClient = new Minio.Client(nconf.get('minio'));
     }
     console.log('Upload complete.');
   } catch (err) {
+    console.log('Error', err);
     console.log('Upload failed.');
     process.exit(1);
   }
