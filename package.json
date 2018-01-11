@@ -1,0 +1,46 @@
+{
+  "name": "mc-upload",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TronM/mc-upload.git"
+  },
+  "keywords": [
+    "Minio"
+  ],
+  "author": "HyperCloud Studio <info@nodeunify.com>",
+  "contributors": [
+    "Junxiang Wei",
+    "Zengliang He"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/TronM/mc-upload/issues"
+  },
+  "homepage": "https://github.com/TronM/mc-upload#readme",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "minio": "^3.2.3",
+    "nconf": "^0.10.0",
+    "readdirp": "^2.1.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.2",
+    "eslint": "^4.10.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.7.0"
+  },
+  "engines": {
+    "node": ">= 8.7.0"
+  }
+}
