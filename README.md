@@ -12,7 +12,7 @@ docker build -t tron-m/mc-upload .
 ### Usage
 
 ```
-docker run -it tron-m/mc-upload npm start -- --source:root=uploads
+docker run --rm tron-m/mc-upload npm start -- --source.root=uploads
 ```
 
 ## Install from Source

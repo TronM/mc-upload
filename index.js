@@ -59,9 +59,11 @@ const readdirp = require('readdirp');
       });
     });
     const minioConfig = _.defaults(defaults.minio, nconf.get('minio'));
-    console.log('minioConfig', minioConfig);
     const minioClient = new Minio.Client(minioConfig);
     const { bucketName } = _.defaults(defaults.target, nconf.get('target'));
+    console.log('Minio', minioConfig);
+    console.log('Source', { root });
+    console.log('Target', { bucketName });
     await minioClient.bucketExists(bucketName);
     for (let { path, fullPath } of files) {
       console.log(`Uploading file: ${path}...`);
