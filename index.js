@@ -8,20 +8,48 @@
 
 const Promise = require('bluebird');
 const Minio = require('minio');
+const _ = require('lodash');
 const nconf = require('nconf');
 const readdirp = require('readdirp');
 
 (async function () {
   try {
     nconf
-      .argv()
-      .env(['NODE_ENV'])
-      .defaults({ NODE_ENV: 'development' });
+      .argv({
+        parseValues: true,
+      })
+      .env({
+        whitelist: [
+          'MINIO_HOST',
+          'MINIO_PORT',
+          'MINIO_SECURE',
+          'MINIO_ACCESS_KEY',
+          'MINIO_SECRET_KEY',
+          'SOURCE_ROOT',
+          'TARGET_BUCKET',
+        ],
+        parseValues: true
+      })
+      .file(`./cfg/config_default.json`);
 
-    const nodeEnv = nconf.get('NODE_ENV');
-    nconf.file(`./cfg/config_${nodeEnv}.json`);
+    // Load environments
+    const defaults = {
+      minio: {
+        endPoint: nconf.get('MINIO_HOST'),
+        port: nconf.get('MINIO_PORT'),
+        secure: nconf.get('MINIO_SECURE'),
+        accessKey: nconf.get('MINIO_ACCESS_KEY'),
+        secretKey: nconf.get('MINIO_SECRET_KEY'),
+      },
+      source: {
+        root: nconf.get('SOURCE_ROOT'),
+      },
+      target: {
+        bucketName: nconf.get('TARGET_BUCKET'),
+      }
+    };
 
-    const { root } = nconf.get('source');
+    const { root } = _.defaults(defaults.source, nconf.get('source'));
     const { files } = await new Promise((resolve, reject) => {
       readdirp({ root }, (err, res) => {
         if (err) {
@@ -30,13 +58,15 @@ const readdirp = require('readdirp');
         resolve(res);
       });
     });
-
-    const minioClient = new Minio.Client(nconf.get('minio'));
-    const { bucketName, basePath } = nconf.get('target');
+    const minioConfig = _.defaults(defaults.minio, nconf.get('minio'));
+    console.log('minioConfig', minioConfig);
+    const minioClient = new Minio.Client(minioConfig);
+    const { bucketName } = _.defaults(defaults.target, nconf.get('target'));
+    await minioClient.bucketExists(bucketName);
     for (let { path, fullPath } of files) {
       console.log(`Uploading file: ${path}...`);
       // use path.join here
-      const etag = await minioClient.fPutObject(bucketName, `${basePath}${path}`, fullPath, 'application/octet-stream');
+      const etag = await minioClient.fPutObject(bucketName, `${path}`, fullPath, 'application/octet-stream');
       console.log(`File uploaded. Etag: ${etag}`);
     }
     console.log('Upload complete.');
@@ -46,4 +76,3 @@ const readdirp = require('readdirp');
     process.exit(1);
   }
 })();
-

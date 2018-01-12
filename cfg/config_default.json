@@ -7,10 +7,9 @@
     "secretKey": "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"
   },
   "source": {
-    "root": "objects"
+    "root": "uploads"
   },
   "target": {
-    "bucketName": "kevinprotoss",
-    "basePath": ""
+    "bucketName": "mc-uploads"
   }
 }

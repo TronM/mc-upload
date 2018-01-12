@@ -30,6 +30,7 @@
   "homepage": "https://github.com/TronM/mc-upload#readme",
   "dependencies": {
     "bluebird": "^3.5.1",
+    "lodash": "^4.17.4",
     "minio": "^3.2.3",
     "nconf": "^0.10.0",
     "readdirp": "^2.1.0"
