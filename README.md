@@ -37,4 +37,6 @@ Environment Variables:
   MINIO_SECURE - enable client TLS verification
   MINIO_ACCESS_KEY - access key of minio instance
   MINIO_SECRET_KEY - secret key of minio instance
+  SOURCE_ROOT - root directory of source
+  TARGET_BUCKET - bucket name of target
 ```
